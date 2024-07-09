@@ -45,6 +45,6 @@ Rp=QQ[varp];
 gens Rp -- check ring variables
 --Compute vanishing ideal as the kernel of the map
 f=map(R,Rp,PBAR);
-I=time trim kernel f; -- used 0.00760187 seconds
-betti I --check degrees of ideal generators: 12 linear, 1 cubic
+I=time kernel f; 
+betti I --check degrees of ideal generators
 netList I_* --display ideal generators
