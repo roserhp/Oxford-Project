@@ -41,7 +41,7 @@ nonZeroEntries=S_(positions(flatten entries pbar,i->i!=0))
 PBAR=flatten entries pbar^(positions(flatten entries pbar,i->i!=0));
 netList PBAR -- check nonzero entries
 varp=toList apply(nonZeroEntries,i->(symbol p)_i);
-Rp=QQ[varp]; 
+Rp=K[varp]; 
 gens Rp -- check ring variables
 --Compute vanishing ideal as the kernel of the map
 f=map(R,Rp,PBAR);
