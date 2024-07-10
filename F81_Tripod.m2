@@ -45,6 +45,13 @@ Rp=K[varp];
 gens Rp -- check ring variables
 --Compute vanishing ideal as the kernel of the map
 f=map(R,Rp,PBAR);
-I=time kernel f; 
+I=time kernel f;  -- used 0.09375 seconds
 betti I --check degrees of ideal generators
 netList I_* --display ideal generators
+I_14
+toString I_14
+
+
+a=((p_1^2*p_2+p_1*p_2^2)/(p_1^3-p_1^2*p_2-p_1*p_2^2+p_2^3+p_1^2*p_3-2*p_1*p_2*p_3+p_2^2*p_3+p_1^2*p_4-2*p_1*p_2*p_4+p_2^2*p_4))
+
+b=(p_1^3-p_1^2*p_2-p_1*p_2^2+p_2^3+p_1^2*p_3-2*p_1*p_2*p_3+p_2^2*p_3+p_1^2*p_4-2*p_1*p_2*p_4+p_2^2*p_4)
