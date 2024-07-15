@@ -30,10 +30,6 @@ H=transpose(matrix{{1,1,1,1},{1/(p_1+p_2),1/(p_1+p_2),-1/(p_3+p_4),-1/(p_3+p_4)}
 A=inverse(transpose H) --this is the one in the paper (not exactly the same matrix because we are using p1+p2+p3+p4=1)
 
 
-length unique select(flatten entries qbar,i->i!=0)
-netList unique select(flatten entries qbar,i->i!=0)
-
-
 --Change of basis in the tensor
 qbar=((transpose H)**(transpose H)**(transpose H))*qq
 
