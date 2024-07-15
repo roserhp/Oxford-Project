@@ -11,6 +11,25 @@ H=transpose(matrix{{1,1,1,1},{1/(p_1+p_2),1/(p_1+p_2),-1/(p_3+p_4),-1/(p_3+p_4)}
 
 M=H*diagonalMatrix(R,4,4,{l_(5,1),l_(5,2),l_(5,2),l_(5,2)})*inverse(H)
 
+
+--H^t=A^(-1), H=A^(-t), H^(-1)=A^t
+--Test with different basis
+AG=transpose matrix{{p_1,p_2,p_3,p_4},{-1,1,0,0},{-p_1,-p_2,p_1+p_2,0},{-p_1,-p_2,-p_3,p_1+p_2+p_3}}
+
+inverse AG
+
+HG=matrix {{1, 1, 1,
+      1}, {(-p_2)/(p_1+p_2), p_1/(p_1+p_2), 0, 0},
+      {(-p_3)/(p_1^2+2*p_1*p_2+p_2^2+p_1*p_3+p_2*p_3),
+      (-p_3)/(p_1^2+2*p_1*p_2+p_2^2+p_1*p_3+p_2*p_3), 1/(p_1+p_2+p_3), 0},
+      {(-p_4)/(p_1^2+2*p_1*p_2+p_2^2+2*p_1*p_3+2*p_2*p_3+p_3^2+p_1*p_4+p_2*p_4+p_3*p_4),
+      (-p_4)/(p_1^2+2*p_1*p_2+p_2^2+2*p_1*p_3+2*p_2*p_3+p_3^2+p_1*p_4+p_2*p_4+p_3*p_4),
+      (-p_4)/(p_1^2+2*p_1*p_2+p_2^2+2*p_1*p_3+2*p_2*p_3+p_3^2+p_1*p_4+p_2*p_4+p_3*p_4),
+      1}}
+
+M=(transpose inverse AG)*diagonalMatrix(R,4,4,{l_(5,1),l_(5,2),l_(5,2),l_(5,2)})*(transpose AG)
+
+
 --Identity at the leaves
 M1=id_(R^4)
 M2=M1
@@ -34,9 +53,27 @@ H4=(transpose H)**(transpose H)**(transpose H)**(transpose H);
 qbar=time H4*qq;
 -- used 2.8125 seconds
 
+--do not rerun unless in need of overwriting
 "F81_Quartet_qbar_1234.txt" << toString qbar << endl << close
 
 
+qbar_(position(S,j->j==(4,4,4,4)),0)
+qbar_(position(S,j->j==(3,3,3,3)),0)
+qbar_(position(S,j->j==(1,1,1,1)),0)
+
+qbar_(position(S,j->j==(1,1,1,1)),0)*qbar_(position(S,j->j==(4,4,4,4)),0)
+qbar_(position(S,j->j==(1,1,4,4)),0)*qbar_(position(S,j->j==(4,4,1,1)),0)
+
+
+--DIFFERENT BASIS
+--Tensor with change of basis
+G4=time (inverse AG)**(inverse AG)**(inverse AG)**(inverse AG);
+-- used 12.6563 seconds
+
+qbar=time G4*qq;
+-- used 2.8125 seconds
+
+length unique select(flatten entries qbar,i->i!=0)
 ---------------------------------
 ---------------------------------
 ---------------------------------
@@ -73,6 +110,22 @@ rank blockQ_{14,15}--0
 rank blockQ_{10,11,12,13}--1
 rank blockQ_{7,8}--1
 
+vflattQ = sub(blockQ, {p_1 => 1/9, p_2 => 2/63, p_3 => 11/21, p_4 => 1/3});
+vflattQ
+
+--rk 0
+rank vflattQ_{position(s,i->i==(3,4)),position(s,i->i==(4,3))}--0
+--rk 1
+rank vflattQ_{position(s,i->i==(1,4)),position(s,i->i==(4,1)),position(s,i->i==(2,4)),position(s,i->i==(4,3))}--1
+rank vflattQ_{position(s,i->i==(1,3)),position(s,i->i==(3,1)),position(s,i->i==(3,2)),position(s,i->i==(2,3))}--1
+rank vflattQ_{position(s,i->i==(1,2)),position(s,i->i==(2,1))}--1
+--rk 2
+rank vflattQ_{position(s,i->i==(1,1)),position(s,i->i==(1,2)),position(s,i->i==(2,2))}--2
+--rk 3
+rank vflattQ_{position(s,i->i==(1,1)),position(s,i->i==(1,2)),position(s,i->i==(1,4)),position(s,i->i==(4,4))}--3
+rank vflattQ_{position(s,i->i==(1,1)),position(s,i->i==(1,2)),position(s,i->i==(1,3)),position(s,i->i==(3,3))}--3
+
+
 --Ring definition for flattening 12|34 general
 Rgeneral=K[l_(1,1)..l_(5,4)]
 gens Rgeneral
@@ -101,6 +154,12 @@ rank flattP_{position(s,i->i==(1,1)),position(s,i->i==(1,2)),position(s,i->i==(1
 --note that it forms a diagonal submatrix with non-zero entries in the diagonal as long as pi is generic and all eigenvalues are non-zero
 flattP_{position(s,i->i==(1,1)),position(s,i->i==(1,2)),position(s,i->i==(1,3)),position(s,i->i==(1,4))}^{position(s,i->i==(1,1)),position(s,i->i==(1,2)),position(s,i->i==(1,3)),position(s,i->i==(1,4))}
 
+
+
+vflattP = sub(flattP, {p_1 => 1/9, p_2 => 2/63, p_3 => 11/21, p_4 => 1/3});
+vflattP
+
+toExternalString vflattP
 
 --Tensor in general case
 qbar=sub(qbar,Rgeneral);

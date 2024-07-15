@@ -29,6 +29,24 @@ H=transpose(matrix{{1,1,1,1},{1/(p_1+p_2),1/(p_1+p_2),-1/(p_3+p_4),-1/(p_3+p_4)}
 	{0,0,1/p_3,-1/p_4},{1/p_1,-1/p_2,0,0}})
 A=inverse(transpose H) --this is the one in the paper (not exactly the same matrix because we are using p1+p2+p3+p4=1)
 
+--Test with different basis
+B=matrix {{p_1, p_1*p_3+p_1*p_4, p_1*p_2*p_3+p_1*p_2*p_4, 1}, {p_2, p_2*p_3+p_2*p_4, -p_1*p_2*p_3-p_1*p_2*p_4, -1}, {p_3,-p_1*p_3-p_2*p_3, p_1*p_3*p_4+p_2*p_3*p_4, -1},
+      {p_4, -p_1*p_4-p_2*p_4, -p_1*p_3*p_4-p_2*p_3*p_4, 1}}
+G=transpose matrix{{p_1,p_2,p_3,p_4},{-1,1,0,0},{-p_1,-p_2,p_1+p_2,0},{-p_1,-p_2,-p_3,1-p_4}}
+
+inv=inverse G;
+qbar=time (inv**inv**inv)*qq;
+netList S_(positions(flatten entries qbar,i->i==0))
+length S_(positions(flatten entries qbar,i->i!=0))
+length S_(positions(flatten entries qbar,i->i==0))
+
+length unique select(flatten entries qbar,i->i!=0)
+netList unique select(flatten entries qbar,i->i!=0)
+
+
 --Change of basis in the tensor
 qbar=((transpose H)**(transpose H)**(transpose H))*qq
+
+
+--Do not rerun unless you want to overwrite this file
 "Tripod_qbar.txt" << toString qbar<< endl << close
