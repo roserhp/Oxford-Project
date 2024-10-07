@@ -226,12 +226,15 @@ x_(1,2,2,2)*x_(2,1,1,2)- x_(1,2,1,2)*x_(2,1,2,2),
 x_(1,2,2,1)*x_(2,1,1,2)- x_(1,2,1,2)*x_(2,1,2,1)}
 betti trim V
 codim V, degree V --(4,6)
+netList V_*
 
 W=V+ideal{(p_1^2*p_3 + 2*p_1*p_2*p_3 + p_1*p_3^2 - 2*p_1*p_3 + p_2^2*p_3 + p_2*p_3^2 - 2*p_2*p_3 - p_3^2 + p_3)*x_(1,1,2,2)*x_(2,2,1,1) + 
 (-p_1^2 - 2*p_1*p_2 - 3*p_1*p_3 + 2*p_1 - p_2^2 - 3*p_2*p_3 + 2*p_2 - 3*p_3^2 + 3*p_3 - 1)*x_(1,1,1,1)*x_(3,3,3,3) + 
 (-p_1^2*p_3 + p_1^2 - 2*p_1*p_2*p_3 + 2*p_1*p_2 - p_1*p_3^2 + 5*p_1*p_3 - 2*p_1 - p_2^2*p_3 + p_2^2 - p_2*p_3^2 + 5*p_2*p_3 - 2*p_2 + 4*p_3^2 - 4*p_3 + 1)*x_(1,1,1,1)*x_(2,3,3,2)};
 betti trim W
 codim W, degree W --(5,12)
+netList W_*
+netList terms W_9
 
 a=random(0,100)/100;
 b=random(0,100)/100;
@@ -239,32 +242,65 @@ c=random(0,100)/100;
 d=1-a-b-c;
 r=(a,b,c,d)
 
-
 W=sub(sub(W, {p_1 => r_0, p_2 => r_1, p_3 => r_2, p_4 => r_3}),T)
 isPrime W --true
+netList W_*
 
 --TO DO
 --Step 1: FIND 4 out of the 9 polynomial equations that form a regular sequence
 use T
 I=sub(V,T)
 codim I,degree I
+netList I_*
 
 J=ideal{I_0,I_1,I_2}
 codim J,degree J
 
+JB1=ideal{I_0,I_1,I_2,I_4} --ideal of rank 1 conditions from block 1 after introducing 
+-- all binomial linear invariants
+codim JB1,degree JB1 --(3,2)
+support JB1
+
+JB2=ideal{I_8,I_5} --ideal of rank 1 conditions from block 2 after introducing 
+-- all binomial linear invariants
+codim JB2,degree JB2
+support JB2
+
+JB=trim(JB1+JB2)
+betti JB --6 quartics
+codim JB,degree JB --(4,8)
+L=primaryDecomposition JB;
+netList L
+L_1==I
+
+
 for i from 3 to 8 do print (i,codim (J+ideal{I_i}),degree (J+ideal{I_i}))
 
 IC=ideal{I_0,I_1,I_2,I_8}
-codim IC,degree IC
+codim IC,degree IC --(4,16)
+radical IC==IC --true
 
 PDI=primaryDecomposition IC;
-netList PD
+netList PDI
 PDI_5==I --true
 
 WIC=IC+W_9;
-codim WIC,degree WIC
+netList WIC_*
+radical WIC==WIC --true
+codim WIC,degree WIC  --(5,32)
 PDW=time primaryDecomposition WIC;
 netList PDW
 PDW_5==W --true
+numgens PDW_0, codim PDW_0, degree PDW_0 --(5,5,4)
+numgens PDW_1, codim PDW_1, degree PDW_1 --(5,5,4)
+numgens PDW_2, codim PDW_2, degree PDW_2 --(5,5,4)
+numgens PDW_3, codim PDW_3, degree PDW_3 --(5,5,4)
+numgens PDW_4, codim PDW_4, degree PDW_4 --(5,5,4)
+--The first 5 components are all complete intersections
+i=5
+netList (PDW_i)_*
+numgens PDW_5, codim PDW_5, degree PDW_5 --(10,5,12)
+
+saturate(WIC,ideal{product support IC})==W --true
 
 --Step 2: understanding from which minors the relevant equations come from
