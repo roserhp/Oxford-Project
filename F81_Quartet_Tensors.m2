@@ -9,26 +9,13 @@ gens R
 H=transpose(matrix{{1,1,1,1},{1/(p_1+p_2),1/(p_1+p_2),-1/(p_3+p_4),-1/(p_3+p_4)},
 	{0,0,1/p_3,-1/p_4},{1/p_1,-1/p_2,0,0}})
 
-M=H*diagonalMatrix(R,4,4,{l_(5,1),l_(5,2),l_(5,2),l_(5,2)})*inverse(H)
+--checks for JC69
+--sub(H,{p_1 => 1/4, p_2 => 1/4, p_3 => 1/4, p_4 => 1/4})
 
+M=(p_1+p_2+p_3+p_4)*H*diagonalMatrix(R,4,4,{l_(5,1),l_(5,2),l_(5,2),l_(5,2)})*inverse(H)
 
---H^t=A^(-1), H=A^(-t), H^(-1)=A^t
---Test with different basis
-AG=transpose matrix{{p_1,p_2,p_3,p_4},{-1,1,0,0},{-p_1,-p_2,p_1+p_2,0},{-p_1,-p_2,-p_3,p_1+p_2+p_3}}
-
-inverse AG
-
-HG=matrix {{1, 1, 1,
-      1}, {(-p_2)/(p_1+p_2), p_1/(p_1+p_2), 0, 0},
-      {(-p_3)/(p_1^2+2*p_1*p_2+p_2^2+p_1*p_3+p_2*p_3),
-      (-p_3)/(p_1^2+2*p_1*p_2+p_2^2+p_1*p_3+p_2*p_3), 1/(p_1+p_2+p_3), 0},
-      {(-p_4)/(p_1^2+2*p_1*p_2+p_2^2+2*p_1*p_3+2*p_2*p_3+p_3^2+p_1*p_4+p_2*p_4+p_3*p_4),
-      (-p_4)/(p_1^2+2*p_1*p_2+p_2^2+2*p_1*p_3+2*p_2*p_3+p_3^2+p_1*p_4+p_2*p_4+p_3*p_4),
-      (-p_4)/(p_1^2+2*p_1*p_2+p_2^2+2*p_1*p_3+2*p_2*p_3+p_3^2+p_1*p_4+p_2*p_4+p_3*p_4),
-      1}}
-
-M=(transpose inverse AG)*diagonalMatrix(R,4,4,{l_(5,1),l_(5,2),l_(5,2),l_(5,2)})*(transpose AG)
-
+--checks for JC69
+--sub(M,{p_1 => 1/4, p_2 => 1/4, p_3 => 1/4, p_4 => 1/4})
 
 --Identity at the leaves
 M1=id_(R^4)
@@ -56,7 +43,6 @@ qbar=time H4*qq;
 --do not rerun unless in need of overwriting
 "F81_Quartet_qbar_1234.txt" << toString qbar << endl << close
 
-
 qbar_(position(S,j->j==(4,4,4,4)),0)
 qbar_(position(S,j->j==(3,3,3,3)),0)
 qbar_(position(S,j->j==(1,1,1,1)),0)
@@ -65,15 +51,6 @@ qbar_(position(S,j->j==(1,1,1,1)),0)*qbar_(position(S,j->j==(4,4,4,4)),0)
 qbar_(position(S,j->j==(1,1,4,4)),0)*qbar_(position(S,j->j==(4,4,1,1)),0)
 
 
---DIFFERENT BASIS
---Tensor with change of basis
-G4=time (inverse AG)**(inverse AG)**(inverse AG)**(inverse AG);
--- used 12.6563 seconds
-
-qbar=time G4*qq;
--- used 2.8125 seconds
-
-length unique select(flatten entries qbar,i->i!=0)
 ---------------------------------
 ---------------------------------
 ---------------------------------

@@ -28,6 +28,7 @@ pTilde = sub(pTilde, {p_1 => r_0, p_2 => r_1, p_3 => r_2, p_4 => r_3});
 S = QQ[l_(1,1)..l_(5,2)];
 pTilde=sub(pTilde,S);
 nonZeroPTilde = delete(null, apply(flatten entries pTilde, m -> if m != 0 then m));
+length nonZeroPTilde
 
 --Define ring with variables non-zero ptildes. Note that here they are x's
 nonZeroEntries=value get "TN93_1234_nonZeroEntries.txt"; --list of the 80 non-zero entries for 12|34
@@ -204,3 +205,66 @@ Mquot=trim sub(M,Tquot);
 betti Mquot
 Rmodel=Tquot/Mquot
 Imodel=trim sub(I,Rmodel) 
+
+---------------
+----------------
+---------------
+--------------
+restart
+nonZeroEntries=value get "TN93_1234_nonZeroEntries.txt"; --list of the 80 non-zero entries for 12|34
+T = QQ[apply(nonZeroEntries, ind -> x_ind)];
+K=frac(QQ[p_1..p_4]);
+Rp=K[gens T];
+V=ideal{x_(2,1,2,2)*x_(2,2,2,1)-x_(2,1,2,1)*x_(2,3,3,2),
+x_(1,2,2,2)*x_(2,2,2,1)-x_(1,2,2,1)*x_(2,3,3,2),
+x_(2,1,2,2)*x_(2,2,1,2)-x_(2,1,1,2)*x_(2,3,3,2),
+x_(2,1,2,1)*x_(2,2,1,2)-x_(2,1,1,2)*x_(2,2,2,1),
+x_(1,2,2,2)*x_(2,2,1,2)-x_(1,2,1,2)*x_(2,3,3,2),
+x_(1,2,2,1)*x_(2,2,1,2)-x_(1,2,1,2)*x_(2,2,2,1),
+x_(1,2,2,2)*x_(2,1,2,1)-x_(1,2,2,1)*x_(2,1,2,2),
+x_(1,2,2,2)*x_(2,1,1,2)- x_(1,2,1,2)*x_(2,1,2,2),
+x_(1,2,2,1)*x_(2,1,1,2)- x_(1,2,1,2)*x_(2,1,2,1)}
+betti trim V
+codim V, degree V --(4,6)
+
+W=V+ideal{(p_1^2*p_3 + 2*p_1*p_2*p_3 + p_1*p_3^2 - 2*p_1*p_3 + p_2^2*p_3 + p_2*p_3^2 - 2*p_2*p_3 - p_3^2 + p_3)*x_(1,1,2,2)*x_(2,2,1,1) + 
+(-p_1^2 - 2*p_1*p_2 - 3*p_1*p_3 + 2*p_1 - p_2^2 - 3*p_2*p_3 + 2*p_2 - 3*p_3^2 + 3*p_3 - 1)*x_(1,1,1,1)*x_(3,3,3,3) + 
+(-p_1^2*p_3 + p_1^2 - 2*p_1*p_2*p_3 + 2*p_1*p_2 - p_1*p_3^2 + 5*p_1*p_3 - 2*p_1 - p_2^2*p_3 + p_2^2 - p_2*p_3^2 + 5*p_2*p_3 - 2*p_2 + 4*p_3^2 - 4*p_3 + 1)*x_(1,1,1,1)*x_(2,3,3,2)};
+betti trim W
+codim W, degree W --(5,12)
+
+a=random(0,100)/100;
+b=random(0,100)/100;
+c=random(0,100)/100;
+d=1-a-b-c;
+r=(a,b,c,d)
+
+
+W=sub(sub(W, {p_1 => r_0, p_2 => r_1, p_3 => r_2, p_4 => r_3}),T)
+isPrime W --true
+
+--TO DO
+--Step 1: FIND 4 out of the 9 polynomial equations that form a regular sequence
+use T
+I=sub(V,T)
+codim I,degree I
+
+J=ideal{I_0,I_1,I_2}
+codim J,degree J
+
+for i from 3 to 8 do print (i,codim (J+ideal{I_i}),degree (J+ideal{I_i}))
+
+IC=ideal{I_0,I_1,I_2,I_8}
+codim IC,degree IC
+
+PDI=primaryDecomposition IC;
+netList PD
+PDI_5==I --true
+
+WIC=IC+W_9;
+codim WIC,degree WIC
+PDW=time primaryDecomposition WIC;
+netList PDW
+PDW_5==W --true
+
+--Step 2: understanding from which minors the relevant equations come from
