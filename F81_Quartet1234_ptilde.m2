@@ -304,3 +304,82 @@ numgens PDW_5, codim PDW_5, degree PDW_5 --(10,5,12)
 saturate(WIC,ideal{product support IC})==W --true
 
 --Step 2: understanding from which minors the relevant equations come from
+
+
+---------------------------------------
+restart
+nonZeroEntries=value get "TN93_1234_nonZeroEntries.txt"; --list of the 80 non-zero entries for 12|34
+T = QQ[apply(nonZeroEntries, ind -> x_ind)];
+
+M=matrix{{x_(1,2,1,2),x_(1,2,2,1),x_(1,2,2,2)},{x_(2,1,1,2),x_(2,1,2,1),x_(2,1,2,2)},{x_(2,2,1,2),x_(2,2,2,1),x_(2,3,3,2)}}
+
+TM=QQ[support M]
+M=sub(M,TM)
+
+VM=minors(2,M);
+codim VM,degree VM
+netList primaryDecomposition VM
+IM=ideal{det M_{0,2}^{0,2},det M_{0,2}^{1,2},det M_{1,2}^{0,2},det M_{1,2}^{1,2}};
+dim IM,codim IM, degree IM
+
+PDIM=primaryDecomposition IM;
+netList PDIM
+PDIM_2==VM
+codim PDIM_0,degree PDIM_0
+codim PDIM_1,degree PDIM_1
+codim PDIM_2,degree PDIM_2
+codim PDIM_3,degree PDIM_3
+
+saturate(IM,ideal{x_(2,3,3,2)})==VM --true
+
+jacobian IM
+JacIM=sub(jacobian IM,apply(support IM,i->i=>1))
+rank JacIM
+
+IM3=ideal{IM_0,IM_1,IM_2}
+codim IM3,degree IM3
+netList primaryDecomposition IM3
+saturate(IM3,ideal{x_(2,3,3,2)})==VM --false
+IM2=ideal{IM_0,IM_1,IM_3}
+codim IM2,degree IM2
+netList primaryDecomposition IM2
+saturate(IM2,ideal{x_(2,3,3,2)})==VM --false
+IM1=ideal{IM_0,IM_2,IM_3}
+codim IM1,degree IM1
+netList primaryDecomposition IM1
+saturate(IM1,ideal{x_(2,3,3,2)})==VM --false
+IM0=ideal{IM_3,IM_1,IM_2}
+codim IM0,degree IM0
+netList primaryDecomposition IM0
+saturate(IM0,ideal{x_(2,3,3,2)})==VM --false
+
+
+--{x_(1,2,1,2), x_(1,2,2,1), x_(1,2,2,2), x_(2,1,1,2), x_(2,1,2,1), x_(2,1,2,2), x_(2,2,1,2), x_(2,2,2,1), x_(2,3,3,2)}
+
+P=ideal{x_(1,2,1,2), x_(1,2,2,1), x_(1,2,2,2), x_(2,1,1,2), x_(2,1,2,1), x_(2,1,2,2), x_(2,2,1,2), x_(2,2,2,1)}
+
+needsPackage "LocalRings"
+Tx=localRing(TM,P)
+dim Tx  --8
+dim TM  --9
+IMP=IM**Tx;
+netList IMP_*
+codim IMP --error
+codim(IMP,Generic=>true) --error
+
+
+---
+ring R=0,a(1..9),dp;
+matrix m[3][3]=a(1..9);
+ideal I=minor(m,2);
+ideal J=m[1][1]*m[2][2]-m[1][2]*m[2][1],m[1][1]*m[2][3]-m[1][3]*m[2][1],m[1][1]*m[3][2]-m[1][2]*m[3][1],m[1][1]*m[3][3]-m[1][3]*m[3][1];
+degree(std(I));
+degree(std(J));
+
+ring R=0,a(1..9),ds;
+matrix m[3][3]=a(1..9);
+ideal I=minor(m,2);
+ideal J=m[1][1]*m[2][2]-m[1][2]*m[2][1],m[1][1]*m[2][3]-m[1][3]*m[2][1],m[1][1]*m[3][2]-m[1][2]*m[3][1],m[1][1]*m[3][3]-m[1][3]*m[3][1];
+degree(std(I));
+degree(std(J));
+ideal K=m[1][1]*m[2][2]-m[1][2]*m[2][1],m[1][1]*m[2][3]-m[1][3]*m[2][1],m[1][1]*m[3][2]-m[1][2]*m[3][1],m[2][2]*m[3][3]-m[2][3]*m[3][2];
