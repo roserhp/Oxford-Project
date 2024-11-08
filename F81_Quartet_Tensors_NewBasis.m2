@@ -5,7 +5,6 @@ K=frac(QQ[p_1,p_2,p_3,p_4]);
 R=K[l_(5,1),l_(5,2)]
 gens R
 
-
 --H^t=A^(-1), H=A^(-t), H^(-1)=A^t
 --Test with different basis
 
@@ -19,12 +18,15 @@ inverse AG
 M=(transpose inverse AG)*diagonalMatrix(R,4,4,{l_(5,1),l_(5,2),l_(5,2),l_(5,2)})*(transpose AG)
 --M=(transpose inverse AG)*diagonalMatrix(R,4,4,{l_(5,2),l_(5,2),l_(5,2),l_(5,1)})*(transpose AG)
 
+--No-evolution point
+M=id_(R^4)
 
 --Identity at the leaves
 M1=id_(R^4)
 M2=M1
 M3=M1
 M4=M1
+
 
 st=toList(1..4)
 S=sort elements (set st)^**4/splice/splice
@@ -56,6 +58,9 @@ qbar_(position(S,j->j==(1,1,1,1)),0)
 qbar_(position(S,j->j==(1,1,3,3)),0)==qbar_(position(S,j->j==(3,3,1,1)),0)
 qbar_(position(S,j->j==(1,1,1,3)),0)
 qbar_(position(S,j->j==(1,1,1,2)),0)
+
+--DO NOT RERUN
+"F81_Quartet_p0_NewBasis.txt" << toString qbar << endl << close
 
 
 ---------------------------------
@@ -101,5 +106,19 @@ qbar_(position(S,j->j==(1,3,3,3)),0)
 ---------------------------------
 ---------------------------------
 ---------------------------------
+restart
+K=frac(QQ[p_1..p_4])
+Rgeneral=K[l_(1,1)..l_(5,4)]
+gens Rgeneral
+qbar=value get "F81_Quartet_qbar_1234_NewBasis.txt"
+st=toList(1..4);
+S=sort elements (set st)^**4/splice/splice;
+auxpbar=transpose matrix{toList apply(S,i->l_(1,i_0)*l_(2,i_1)*l_(3,i_2)*l_(4,i_3)*qbar_(position(S,j->j==i),0))};
+pbar=time sub(auxpbar,flatten toList apply(1..5,i->{l_(i,4)=>l_(i,2),l_(i,3)=>l_(i,2)}));
 
+--checks
+pbar_(position(S,j->j==(1,2,3,3)),0)==l_(1,1)*l_(2,2)*l_(3,2)*l_(4,2)*qbar_(position(S,j->j==(1,2,3,3)),0)
+pbar_(position(S,j->j==(2,2,3,3)),0)==l_(1,2)*l_(2,2)*l_(3,2)*l_(4,2)*qbar_(position(S,j->j==(2,2,3,3)),0)
+
+"F81_Quartet_pbar_1234_NewBasis.txt" << toString pbar << endl << close
 
