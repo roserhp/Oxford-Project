@@ -226,12 +226,15 @@ x_(1,2,2,2)*x_(2,1,1,2)- x_(1,2,1,2)*x_(2,1,2,2),
 x_(1,2,2,1)*x_(2,1,1,2)- x_(1,2,1,2)*x_(2,1,2,1)}
 betti trim V
 codim V, degree V --(4,6)
+netList V_*
 
 W=V+ideal{(p_1^2*p_3 + 2*p_1*p_2*p_3 + p_1*p_3^2 - 2*p_1*p_3 + p_2^2*p_3 + p_2*p_3^2 - 2*p_2*p_3 - p_3^2 + p_3)*x_(1,1,2,2)*x_(2,2,1,1) + 
 (-p_1^2 - 2*p_1*p_2 - 3*p_1*p_3 + 2*p_1 - p_2^2 - 3*p_2*p_3 + 2*p_2 - 3*p_3^2 + 3*p_3 - 1)*x_(1,1,1,1)*x_(3,3,3,3) + 
 (-p_1^2*p_3 + p_1^2 - 2*p_1*p_2*p_3 + 2*p_1*p_2 - p_1*p_3^2 + 5*p_1*p_3 - 2*p_1 - p_2^2*p_3 + p_2^2 - p_2*p_3^2 + 5*p_2*p_3 - 2*p_2 + 4*p_3^2 - 4*p_3 + 1)*x_(1,1,1,1)*x_(2,3,3,2)};
 betti trim W
 codim W, degree W --(5,12)
+netList W_*
+netList terms W_9
 
 a=random(0,100)/100;
 b=random(0,100)/100;
@@ -239,32 +242,144 @@ c=random(0,100)/100;
 d=1-a-b-c;
 r=(a,b,c,d)
 
-
 W=sub(sub(W, {p_1 => r_0, p_2 => r_1, p_3 => r_2, p_4 => r_3}),T)
 isPrime W --true
+netList W_*
 
 --TO DO
 --Step 1: FIND 4 out of the 9 polynomial equations that form a regular sequence
 use T
 I=sub(V,T)
 codim I,degree I
+netList I_*
 
 J=ideal{I_0,I_1,I_2}
 codim J,degree J
 
+JB1=ideal{I_0,I_1,I_2,I_4} --ideal of rank 1 conditions from block 1 after introducing 
+-- all binomial linear invariants
+codim JB1,degree JB1 --(3,2)
+support JB1
+
+JB2=ideal{I_8,I_5} --ideal of rank 1 conditions from block 2 after introducing 
+-- all binomial linear invariants
+codim JB2,degree JB2
+support JB2
+
+JB=trim(JB1+JB2)
+betti JB --6 quartics
+codim JB,degree JB --(4,8)
+L=primaryDecomposition JB;
+netList L
+L_1==I
+
+
 for i from 3 to 8 do print (i,codim (J+ideal{I_i}),degree (J+ideal{I_i}))
 
 IC=ideal{I_0,I_1,I_2,I_8}
-codim IC,degree IC
+codim IC,degree IC --(4,16)
+radical IC==IC --true
 
 PDI=primaryDecomposition IC;
-netList PD
+netList PDI
 PDI_5==I --true
 
 WIC=IC+W_9;
-codim WIC,degree WIC
+netList WIC_*
+radical WIC==WIC --true
+codim WIC,degree WIC  --(5,32)
 PDW=time primaryDecomposition WIC;
 netList PDW
 PDW_5==W --true
+numgens PDW_0, codim PDW_0, degree PDW_0 --(5,5,4)
+numgens PDW_1, codim PDW_1, degree PDW_1 --(5,5,4)
+numgens PDW_2, codim PDW_2, degree PDW_2 --(5,5,4)
+numgens PDW_3, codim PDW_3, degree PDW_3 --(5,5,4)
+numgens PDW_4, codim PDW_4, degree PDW_4 --(5,5,4)
+--The first 5 components are all complete intersections
+i=5
+netList (PDW_i)_*
+numgens PDW_5, codim PDW_5, degree PDW_5 --(10,5,12)
+
+saturate(WIC,ideal{product support IC})==W --true
 
 --Step 2: understanding from which minors the relevant equations come from
+
+
+---------------------------------------
+restart
+nonZeroEntries=value get "TN93_1234_nonZeroEntries.txt"; --list of the 80 non-zero entries for 12|34
+T = QQ[apply(nonZeroEntries, ind -> x_ind)];
+
+M=matrix{{x_(1,2,1,2),x_(1,2,2,1),x_(1,2,2,2)},{x_(2,1,1,2),x_(2,1,2,1),x_(2,1,2,2)},{x_(2,2,1,2),x_(2,2,2,1),x_(2,3,3,2)}}
+
+TM=QQ[support M]
+M=sub(M,TM)
+
+VM=minors(2,M);
+codim VM,degree VM
+netList primaryDecomposition VM
+IM=ideal{det M_{0,2}^{0,2},det M_{0,2}^{1,2},det M_{1,2}^{0,2},det M_{1,2}^{1,2}};
+dim IM,codim IM, degree IM
+
+PDIM=primaryDecomposition IM;
+netList PDIM
+PDIM_2==VM
+codim PDIM_0,degree PDIM_0
+codim PDIM_1,degree PDIM_1
+codim PDIM_2,degree PDIM_2
+codim PDIM_3,degree PDIM_3
+
+saturate(IM,ideal{x_(2,3,3,2)})==VM --true
+
+jacobian IM
+JacIM=sub(jacobian IM,apply(support IM,i->i=>1))
+rank JacIM
+
+IM3=ideal{IM_0,IM_1,IM_2}
+codim IM3,degree IM3
+netList primaryDecomposition IM3
+saturate(IM3,ideal{x_(2,3,3,2)})==VM --false
+IM2=ideal{IM_0,IM_1,IM_3}
+codim IM2,degree IM2
+netList primaryDecomposition IM2
+saturate(IM2,ideal{x_(2,3,3,2)})==VM --false
+IM1=ideal{IM_0,IM_2,IM_3}
+codim IM1,degree IM1
+netList primaryDecomposition IM1
+saturate(IM1,ideal{x_(2,3,3,2)})==VM --false
+IM0=ideal{IM_3,IM_1,IM_2}
+codim IM0,degree IM0
+netList primaryDecomposition IM0
+saturate(IM0,ideal{x_(2,3,3,2)})==VM --false
+
+
+--{x_(1,2,1,2), x_(1,2,2,1), x_(1,2,2,2), x_(2,1,1,2), x_(2,1,2,1), x_(2,1,2,2), x_(2,2,1,2), x_(2,2,2,1), x_(2,3,3,2)}
+
+P=ideal{x_(1,2,1,2), x_(1,2,2,1), x_(1,2,2,2), x_(2,1,1,2), x_(2,1,2,1), x_(2,1,2,2), x_(2,2,1,2), x_(2,2,2,1)}
+
+needsPackage "LocalRings"
+Tx=localRing(TM,P)
+dim Tx  --8
+dim TM  --9
+IMP=IM**Tx;
+netList IMP_*
+codim IMP --error
+codim(IMP,Generic=>true) --error
+
+
+---
+ring R=0,a(1..9),dp;
+matrix m[3][3]=a(1..9);
+ideal I=minor(m,2);
+ideal J=m[1][1]*m[2][2]-m[1][2]*m[2][1],m[1][1]*m[2][3]-m[1][3]*m[2][1],m[1][1]*m[3][2]-m[1][2]*m[3][1],m[1][1]*m[3][3]-m[1][3]*m[3][1];
+degree(std(I));
+degree(std(J));
+
+ring R=0,a(1..9),ds;
+matrix m[3][3]=a(1..9);
+ideal I=minor(m,2);
+ideal J=m[1][1]*m[2][2]-m[1][2]*m[2][1],m[1][1]*m[2][3]-m[1][3]*m[2][1],m[1][1]*m[3][2]-m[1][2]*m[3][1],m[1][1]*m[3][3]-m[1][3]*m[3][1];
+degree(std(I));
+degree(std(J));
+ideal K=m[1][1]*m[2][2]-m[1][2]*m[2][1],m[1][1]*m[2][3]-m[1][3]*m[2][1],m[1][1]*m[3][2]-m[1][2]*m[3][1],m[2][2]*m[3][3]-m[2][3]*m[3][2];
