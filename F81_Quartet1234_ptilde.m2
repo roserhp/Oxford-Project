@@ -14,15 +14,16 @@ K=frac(QQ[p_1..p_4]);
 R=K[l_(1,1)..l_(5,2)];
 pTilde=value get "F81_4leaves_tensor_ptilde.txt";
 
+--Careful with choosing pi like this, since d could be negative
 a=random(0,100)/100;
 b=random(0,100)/100;
 c=random(0,100)/100;
-d=1-a-b-c;
+d=1-a-b-c
 r=(a,b,c,d)
 sum toList r
 
 --Choose a random root distribution
--- r=(1/9,2/63,11/21,1/3)
+r=(1/9,2/63,11/21,1/3)
 pTilde = sub(pTilde, {p_1 => r_0, p_2 => r_1, p_3 => r_2, p_4 => r_3});
 
 S = QQ[l_(1,1)..l_(5,2)];
@@ -131,7 +132,8 @@ support m5
 support m6
 support m7
 
-Im=ideal{m3,m4,m5,m6,m7}
+Im=trim ideal{m3,m4,m5,m6,m7}
+betti Im
 
 isSubset(Im,I) --true
 
@@ -153,7 +155,30 @@ Iquotquot=trim sub(Iquot,Tquotquot);
 betti Iquotquot
 netList Iquotquot_*
 
+--COMPARISON TO MODEL EQUATIONS from ATR - model selection
+use Rp
+M1=p34^2*x_(2,2,4,4)-p12^2*x_(2,2,3,3)-(p34-p12)*x_(4,4,4,2)
+M2=p_1*p_2*p_3*p_4*x_(3,3,4,4)-p12^2*x_(2,2,3,3)+p12^2*x_(4,4,4,2)
+M3=(p12*p34+(p12-p34)^2)/(p12*p34)*x_(2,2,2,2)-(p_3^3+p_4^3)/(p_3*p_4*p34^2)*x_(3,3,3,3)-(p_3*p_4*(p12-p34)^2-p12^2*p_3*p_4-p12*(p_3-p_4)^2)/(p12*p34*p_3*p_4)*x_(4,4,4,2)
+M4=(p12*p34+(p12-p34)^2)/(p12*p34)*x_(2,2,2,2)-(p_1^3+p_2^3)/(p_1*p_2*p12^2)*x_(4,4,4,4)-(p_1*p_2*(p12-p34)^2-p34^2*p_1*p_2-p34*(p_1-p_2)^2)/(p12*p34*p_1*p_2)*x_(4,4,4,2)
+M5=p_1*p_2*p_3*p_4*x_(3,3,4,4)-(p12*p34+(p12-p34)^2)*x_(2,2,2,2)+(p12*p34+(p12-p34)^2)*x_(4,4,4,2)
 
+M1T=sub(sub(M1, {p_1 => r_0, p_2 => r_1, p_3 => r_2, p_4 => r_3}),T)
+M2T=sub(sub(M2, {p_1 => r_0, p_2 => r_1, p_3 => r_2, p_4 => r_3}),T)
+M3T=sub(sub(M3, {p_1 => r_0, p_2 => r_1, p_3 => r_2, p_4 => r_3}),T)
+M4T=sub(sub(M4, {p_1 => r_0, p_2 => r_1, p_3 => r_2, p_4 => r_3}),T)
+M5T=sub(sub(M5, {p_1 => r_0, p_2 => r_1, p_3 => r_2, p_4 => r_3}),T)
+
+M1T % gb I --0
+M2T % gb I --0
+M3T % gb I --0
+M4T % gb I --0
+M5T % gb I --0
+
+IM=trim ideal{M1T,M2T,M3T,M4T,M5T};
+betti IM
+
+Im==IM
 
 --Equations from Niharika:
 use Rp
@@ -182,6 +207,7 @@ n2auxT=sub(sub(n2aux, {p_1 => 1/9, p_2 => 2/63, p_3 => 11/21, p_4 => 1/3}),T)
 n2auxT % gb I --not in the ideal!!!
 
 (n2auxT % gb I)==(n2T % gb I) --true
+
 
 --Check model equations from ATR - model selection
 use Rp
