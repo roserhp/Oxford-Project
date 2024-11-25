@@ -100,18 +100,42 @@ T5=matrix{{p1144,p1244,p4444*x_(4,4,4,4),p1444},
 	  {0,0,p2444*x_(4,4,4,2),p1244}};
 t5=det T5;
 
+T61=matrix{{p1122,p1222},{p1244*x_(4,4,4,2),p2244*x_(2,2,4,4)}}
+T62=matrix{{p1122,p1222},{p1233*x_(4,4,4,2),p2233*x_(2,2,3,3)}}
+t6=p1133*det T61-p1144*det T62
+
+T71=matrix{{p1122,p1244},{p1233*x_(4,4,4,2),x_(3,3,4,4)}}
+T72=matrix{{p1122,p1244},{p1244*x_(4,4,4,2),p4444*x_(4,4,4,4)}}
+t7=(p1144)^2*det T71-p1133*p1144*det T72+p1133*p1444^2*p1122*x_(4,4,4,2)
+
 
 m3=sub(t3, {p_1 => r_0, p_2 => r_1, p_3 => r_2, p_4 => r_3})
 m4=sub(t4, {p_1 => r_0, p_2 => r_1, p_3 => r_2, p_4 => r_3})
 m5=sub(t5, {p_1 => r_0, p_2 => r_1, p_3 => r_2, p_4 => r_3})
+m6=sub(t6, {p_1 => r_0, p_2 => r_1, p_3 => r_2, p_4 => r_3})
+m7=sub(t7, {p_1 => r_0, p_2 => r_1, p_3 => r_2, p_4 => r_3})
 
 m3=sub(m3,T) 
 m4=sub(m4,T)  
 m5=sub(m5,T) 
+m6=sub(m6,T)
+m7=sub(m7,T)
 
-Im=ideal{m3,m4,m5}
+m4 % gb I
+m6 % gb I
+m7 % gb I
+
+support m3
+support m4
+support m5
+support m6
+support m7
+
+Im=ideal{m3,m4,m5,m6,m7}
 
 isSubset(Im,I) --true
+
+I2plus+Im==I --true
 
 Tquot=T/I2plus
 gens Tquot
