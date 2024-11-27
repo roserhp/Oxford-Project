@@ -50,6 +50,25 @@ qbar_(position(S,j->j==(1,1,1,1)),0)
 qbar_(position(S,j->j==(1,1,1,1)),0)*qbar_(position(S,j->j==(4,4,4,4)),0)
 qbar_(position(S,j->j==(1,1,4,4)),0)*qbar_(position(S,j->j==(4,4,1,1)),0)
 
+--No evolution point in basis H (qbar of the star tree)
+noEvol=transpose matrix{toList apply(flatten entries qbar,i->sub(i,{l_(5,1)=>1,l_(5,2)=>1}))};
+
+length select(flatten entries noEvol,i->i!=0)--78
+
+noEvol_(position(S,j->j==(3,3,4,4)),0)
+qbar_(position(S,j->j==(3,3,4,4)),0)
+
+noEvol_(position(S,j->j==(2,3,2,3)),0)
+qbar_(position(S,j->j==(2,3,2,3)),0)
+
+noEvol_(position(S,j->j==(2,2,3,3)),0)
+qbar_(position(S,j->j==(2,2,3,3)),0)
+
+noEvol_(position(S,j->j==(2,2,3,3)),0)==noEvol_(position(S,j->j==(2,3,2,3)),0)--true
+
+--do not rerun unless in need of overwriting
+"F81_Quartet_NoEvol.txt" << toString noEvol << endl << close
+
 
 ---------------------------------
 ---------------------------------
@@ -138,7 +157,13 @@ vflattP
 
 toExternalString vflattP
 
+-----------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
+
 --Tensor in general case
+
 qbar=sub(qbar,Rgeneral);
 qbar_(position(S,j->j==(2,2,3,3)),0)
 use Rgeneral
@@ -152,6 +177,23 @@ pbar_(position(S,j->j==(2,2,3,3)),0)
 pbar_(position(S,j->j==(2,2,4,4)),0)
 "F81_Quartet_pbar_1234.txt" << toString pbar << endl << close
 
+
+--pTilde
+
+pTilde=transpose matrix{toList apply(0..255,i->if(noEvol_(i,0)!=0) then (1/noEvol_(i,0))*pbar_(i,0) else pbar_(i,0))};
+length select(flatten entries pTilde,i->i!=0)--80
+
+pTilde_(position(S,j->j==(3,3,4,4)),0)==pbar_(position(S,j->j==(3,3,4,4)),0)--true
+
+pbar_(position(S,j->j==(2,3,2,3)),0)
+pTilde_(position(S,j->j==(2,3,2,3)),0)
+
+pbar_(position(S,j->j==(2,2,3,3)),0)
+pTilde_(position(S,j->j==(2,2,3,3)),0)
+
+
+--do not rerun unless in need of overwriting
+"F81_Quartet_ptilde_1234.txt" << toString pTilde << endl << close
 
 
 
