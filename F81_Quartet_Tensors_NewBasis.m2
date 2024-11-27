@@ -135,3 +135,7 @@ pTilde_(position(S,j->j==(3,3,4,4)),0)
 pTilde_(position(S,j->j==(2,2,2,2)),0)
 pTilde_(position(S,j->j==(3,3,3,3)),0)
 pTilde_(position(S,j->j==(4,4,4,4)),0)
+
+
+pTilde_(position(S,j->j==(2,3,4,4)),0)
+pTilde_(position(S,j->j==(3,4,3,4))
