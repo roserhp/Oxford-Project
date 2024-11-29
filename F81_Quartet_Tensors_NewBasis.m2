@@ -50,7 +50,7 @@ qbar=time G4*qq;
 "F81_Quartet_qbar_1234_NewBasis.txt" << toString qbar << endl << close
 
 -----------------------------------------------------------------
--- 2. pbar, p0 and ptilde
+-- 2. pbar, p0 and ptilde, qtilde
 -----------------------------------------------------------------
 
 restart
@@ -97,6 +97,36 @@ pTilde_(position(S,j->j==(3,3,2,2)),0)
 
 pbar_(position(S,j->j==(2,2,3,3)),0)==pbar_(position(S,j->j==(3,3,2,2)),0)--true
 pTilde_(position(S,j->j==(2,2,3,3)),0)==pTilde_(position(S,j->j==(3,3,2,2)),0)--true
+
+--qTilde
+qTilde=transpose matrix{toList apply(0..255,i->if(p0_(i,0)!=0) then (1/p0_(i,0))*qbar_(i,0) else qbar_(i,0))};
+length select(flatten entries pTilde,i->i!=0)--112
+
+qbar_(position(S,j->j==(2,3,2,3)),0)
+qTilde_(position(S,j->j==(2,3,2,3)),0)
+
+qbar_(position(S,j->j==(2,2,3,3)),0)
+qTilde_(position(S,j->j==(2,2,3,3)),0)
+
+qbar_(position(S,j->j==(3,3,2,2)),0)
+qTilde_(position(S,j->j==(3,3,2,2)),0)
+
+qbar_(position(S,j->j==(2,2,3,3)),0)==qbar_(position(S,j->j==(3,3,2,2)),0)--true
+qTilde_(position(S,j->j==(2,2,3,3)),0)==qTilde_(position(S,j->j==(3,3,2,2)),0)--true
+
+qbar_(position(S,j->j==(2,2,3,3)),0)==qbar_(position(S,j->j==(2,2,4,4)),0)--false
+qTilde_(position(S,j->j==(2,2,3,3)),0)==qTilde_(position(S,j->j==(2,2,4,4)),0)--true
+
+qbar_(position(S,j->j==(2,2,3,3)),0)
+qbar_(position(S,j->j==(2,2,4,4)),0)
+
+qTilde_(position(S,j->j==(2,2,3,3)),0)
+qTilde_(position(S,j->j==(2,2,4,4)),0)
+
+toExternalString p0_(position(S,j->j==(2,2,3,3)),0)
+toExternalString p0_(position(S,j->j==(2,2,4,4)),0)
+
+
 
 
 --DO NOT RERUN
