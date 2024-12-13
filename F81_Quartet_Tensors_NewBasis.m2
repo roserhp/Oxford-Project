@@ -153,6 +153,7 @@ netList nonMonomial
 restart
 K=frac(QQ[p_1..p_4])
 R=K[l_(1,1)..l_(5,2)]
+
 pTilde=value get "F81_Quartet_pTilde_NewBasis.txt";
 st=toList(1..4);
 S=sort elements (set st)^**4/splice/splice;
@@ -167,5 +168,16 @@ pTilde_(position(S,j->j==(3,3,3,3)),0)
 pTilde_(position(S,j->j==(4,4,4,4)),0)
 
 
-pTilde_(position(S,j->j==(2,3,4,4)),0)
-pTilde_(position(S,j->j==(3,4,3,4))
+pTilde_(position(S,j->j==(2,3,4,4)),0)==pTilde_(position(S,j->j==(3,4,3,4)),0)
+pTilde_(position(S,j->j==(2,3,3,3)),0)==pTilde_(position(S,j->j==(2,4,2,4)),0)
+
+
+p0=value get "F81_Quartet_p0_NewBasis.txt";
+qbar=value get "F81_Quartet_qbar_1234_NewBasis.txt";
+
+factor p0_(position(S,j->j==(2,3,3,3)),0)
+factor p0_(position(S,j->j==(2,4,2,4)),0)
+
+qbar_(position(S,j->j==(2,4,2,4)),0)==p0_(position(S,j->j==(2,4,2,4)),0)*l_(5,2)
+
+p0_(position(S,j->j==(2,3,4,4)),0)==p0_(position(S,j->j==(2,4,3,4)),0) --true
